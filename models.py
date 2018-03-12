@@ -64,7 +64,7 @@ def adversarial(image_):
         conv4 = _conv_layer(conv3, 192, 3, 1)
         conv5 = _conv_layer(conv4, 128, 3, 2)
         
-        flat_size = 128 * 7 * 7
+        flat_size = 128 * 7 * 7   #怎么算出来的呢
         conv5_flat = tf.reshape(conv5, [-1, flat_size])
 
         W_fc = tf.Variable(tf.truncated_normal([flat_size, 1024], stddev=0.01))

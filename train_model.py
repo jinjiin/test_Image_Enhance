@@ -50,7 +50,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     dslr_ = tf.placeholder(tf.float32, [None, PATCH_SIZE])
     dslr_image = tf.reshape(dslr_, [-1, PATCH_HEIGHT, PATCH_WIDTH, 3])
 
-    adv_ = tf.placeholder(tf.float32, [None, 1])
+    adv_ = tf.placeholder(tf.float32, [None, 1]) # 二维的数据，第一维数据量不确定，第二维数据量为1
 
     # get processed enhanced image
 
@@ -62,6 +62,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     dslr_gray = tf.reshape(tf.image.rgb_to_grayscale(dslr_image),[-1, PATCH_WIDTH * PATCH_HEIGHT])
 
     # push randomly the enhanced or dslr image to an adversarial CNN-discriminator
+    # dslr的标签是1, enhanced的标签是0,对应的值是adv_,作为监督信息，然后在texture loss中计算这部分的loss值,然后反向传播，作为判别模型
 
     adversarial_ = tf.multiply(enhanced_gray, 1 - adv_) + tf.multiply(dslr_gray, adv_)
     adversarial_image = tf.reshape(adversarial_, [-1, PATCH_HEIGHT, PATCH_WIDTH, 1])

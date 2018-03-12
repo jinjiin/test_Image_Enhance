@@ -46,7 +46,7 @@ def load_batch(phone, dped_dir, TRAIN_SIZE, IMAGE_SIZE):
         TRAIN_IMAGES = np.arange(0, TRAIN_SIZE)
     else:
         TRAIN_IMAGES = np.random.choice(np.arange(0, NUM_TRAINING_IMAGES), TRAIN_SIZE, replace=False)
-
+    # TRAIN_IMAGES是训练图片的编号，如[4 7 5 6 3]
     train_data = np.zeros((TRAIN_SIZE, IMAGE_SIZE))
     train_answ = np.zeros((TRAIN_SIZE, IMAGE_SIZE))
 
