@@ -75,6 +75,7 @@ draw_params = dict(matchColor=(0,255,0),
                    matchesMask=matchesMask,
                    flags=0)
 img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
+print()
 cv2.rectangle(img3, (np.min(src_pts), np.min(dst_pts)),
                (np.max(src_pts), np.max(dst_pts)),
                (255, 0, 0), 1, 8, 0) #(255, 0, 0)是红色
