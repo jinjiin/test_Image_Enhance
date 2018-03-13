@@ -25,36 +25,17 @@ Flann_index_kdtree = 0
 index_params = dict(algorithm=Flann_index_kdtree, trees=5)
 search_params = dict(checks=50)
 
-# FLANN 是快速最近邻搜索包
-# KTreeIndex配置索引，指定待处理核密度树的数量（理想的数量在1-16）
-# search_params用它来指定递归遍历的次数。值越高结果越准 确, 但是消耗的时间也越多
-# 5kd-trees和50checks总能取得合理精度，而且短时间完成
+src_pts = np.float32([kp1[i].pt for i in range(kp1)]).reshape(-1, 1, 2)
+dst_pts = np.float32([kp2[i].pt for i in range(kp2)]).reshape(-1, 1, 2)
 
-flann = cv2.FlannBasedMatcher(index_params, search_params)
-matches = flann.knnMatch(des1, des2, k=2)
-print("--------------------------matches--------------------------")
-print(matches)
+M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+matchesMask = mask.ravel().tolist()
 
-#store all the good matches as per Lowe's ratio test
-good = []
-for m, n in matches:
-    if m.distance < 0.7*n.distance: # 最优匹配距离/次优匹配距离<0.7，即视为是匹配点
-        good.append(m)
-if len(good)>Min_match_count:
-    # get coordinates of keypoints
-    src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
-    dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
+h, w = img1.shape
+pts = np.float32([[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]).reshape(-1, 1, 2)
+dst = cv2.perspectiveTransform(pts, M)
+img2 = cv2.polylines(img2, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
 
-    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-    matchesMask = mask.ravel().tolist()
-
-    h, w = img1.shape
-    pts = np.float32([[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]).reshape(-1, 1, 2)
-    dst = cv2.perspectiveTransform(pts, M)
-    img2 = cv2.polylines(img2, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
-else:
-    print("Not enough matched are found %d / %d" %(len(good), Min_match_count))
-    matchesMask = None
 
 # get coordinates of keypoints
 """src_pts = np.float32([kp1[m.queryIdx].pt for m,n in matches]).reshape(-1, 1, 2)
