@@ -35,7 +35,7 @@ h, w = img1.shape
 pts = np.float32([[0, 0], [0, h-1], [w-1, h-1], [w-1, 0]]).reshape(-1, 1, 2)
 dst = cv2.perspectiveTransform(pts, M)
 img2 = cv2.polylines(img2, [np.int32(dst)], True, 255, 3, cv2.LINE_AA)
-
+cv2.imwrite("test_1.jpg", img2)
 
 # get coordinates of keypoints
 """src_pts = np.float32([kp1[m.queryIdx].pt for m,n in matches]).reshape(-1, 1, 2)
