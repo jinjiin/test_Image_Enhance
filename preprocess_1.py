@@ -32,15 +32,14 @@ search_params = dict(checks=50)
 
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 matches = flann.knnMatch(des1, des2, k=2)
-print("--------------------------matches--------------------------")
-print(matches)
 
+#-------------------------------------------------如果使用homograph
 #store all the good matches as per Lowe's ratio test
-"""good = []
+good = []
 for m, n in matches:
     if m.distance < 0.7*n.distance: # 最优匹配距离/次优匹配距离<0.7，即视为是匹配点
         good.append(m)
-if len(good)>Min_match_count:
+if len(good) > Min_match_count:
     # get coordinates of keypoints
     src_pts = np.float32([kp1[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
     dst_pts = np.float32([kp2[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
@@ -55,27 +54,30 @@ if len(good)>Min_match_count:
 else:
     print("Not enough matched are found %d / %d" %(len(good), Min_match_count))
     matchesMask = None
-"""
-# get coordinates of keypoints
-src_pts = np.float32([kp1[m.queryIdx].pt for m,n in matches]).reshape(-1, 1, 2)
-dst_pts = np.float32([kp2[m.trainIdx].pt for m,n in matches]).reshape(-1, 1, 2)
-print("src_pts")
-print(src_pts)
-print("dst_pts")
-print(dst_pts)
+draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+                   singlePointColor = None,
+                   matchesMask = matchesMask, # draw only inliers
+                   flags = 2)
+
+img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
+cv2.imwrite("test_homo.jpg", img3)
+
+#-------------------------------------------------如果不使用homograph
 # Need to draw only good matches, so create a mask
 """matchesMask = [[0,0] for i in range(len(matches))]
 
 # ratio test as per Lowe's paper
-for i,(m,n) in enumerate(matches):
+for i, (m, n) in enumerate(matches):
     if m.distance < 0.7*n.distance:
         matchesMask[i] = [1,0]
 draw_params = dict(matchColor=(0,255,0),
                    singlePointColor=(255,0,0),
                    matchesMask=matchesMask,
                    flags=0)
-img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)"""
-print(np.min(src_pts, axis=1))
+img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
+cv2.imwrite("test_no_homo.jpg", img3)"""
+
+"""print(np.min(src_pts, axis=1))
 print(np.min(src_pts, axis=1)[0][0])  # 1508.54
 print(np.min(src_pts, axis=1)[0][1])  # 2.6525
 print(np.max(src_pts, axis=1))
@@ -89,4 +91,4 @@ cv2.rectangle(img2, (np.min(dst_pts, axis=1)[0][0], np.min(dst_pts, axis=1)[0][1
                (np.max(dst_pts, axis=1)[0][0], np.max(dst_pts, axis=1)[0][1]),
                (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_1.jpg", img1)
-cv2.imwrite("test_2.jpg", img2)
+cv2.imwrite("test_2.jpg", img2)"""
