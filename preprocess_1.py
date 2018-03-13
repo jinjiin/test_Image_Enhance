@@ -77,22 +77,34 @@ draw_params = dict(matchColor=(0,255,0),
                    flags=0)
 img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
 cv2.imwrite("test_no_homo.jpg", img3)"""
-def getmin_max_coor(pts, matchesMask):
+def getmin_max_coor(pts, matchesMask, M):
     coordinates = []
     for i in range(len(matchesMask)-1):
         if matchesMask[i] == 1:
             coordinates.append(pts[i])
     coordinates = np.float32([coordinates]).reshape(-1, 1, 2)
-    a = tuple(np.max(coordinates, axis=0)[0])
-    b = tuple(np.min(coordinates, axis=0)[0])
-    print(a)
-    print(b)
-    return a, b
+    a = np.max(coordinates, axis=0)[0]
+    b = np.min(coordinates, axis=0)[0]
+    orimax = tuple(a)
+    orimin = tuple(b)
+    a = np.float32(a).reshape(-1, 1, 2)
+    b = np.float32(b).reshape(-1, 1, 2)
+    #phomax = cv2.perspectiveTransform(a, M)
+    #phomin = cv2.perspectiveTransform(b, M)
+    phomax = tuple(np.float32([cv2.perspectiveTransform(a, M)]).reshape(-1, 1, 2)[0][0])
+    phomin = tuple(np.float32([cv2.perspectiveTransform(b, M)]).reshape(-1, 1, 2)[0][0])
+    print(orimin, orimax, phomax, phomin)
+    return orimax, orimin, phomax, phomin
 
-# 改为分别在两张图中画框
-orimax, orimin = getmin_max_coor(src_pts, matchesMask)
+orimax, orimin, phomax, phomin = getmin_max_coor(src_pts, matchesMask, M)
+""""# 改为分别在两张图中画框
 cv2.rectangle(img1, orimin, orimax, (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_1.jpg", img1)
-# cv2.rectangle(img2, tuple(np.float32(cv2.perspectiveTransform(np.float32(orimin).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]),
-#  tuple(np.float32(cv2.perspectiveTransform(np.float32(orimax).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]), (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
+cv2.rectangle(img2, phomin, phomax, (255, 255, 0), 3)
+cv2.imwrite("test_2.jpg", img2)"""
+
+img1 = img1[int(min(orimin[1], orimax[1])):int(max(orimin[1], orimax[1])), int(min(orimin[0], orimax[0])):int(max(orimin[0], orimax[0]))]
+img2 = img2[int(min(phomin[1], phomax[1])):int(max(phomin[1], phomax[1])), int(min(phomin[0], phomax[0])):int(max(phomin[0], phomax[0]))]
+img1 = cv2.resize(img1, (img2.shape[0], img2.shape[1]), interpolation=cv2.INTER_CUBIC)
+cv2.imwrite("test_1.jpg", img1)
 cv2.imwrite("test_2.jpg", img2)
