@@ -12,4 +12,4 @@ img3 = cv2.resize(img2, (100, 100), interpolation=cv2.INTER_CUBIC)
 cv2.imwrite("test_resize.jpg", img3)
 plt.imshow(img2)
 plt.show()"""
-print(img2.shape[0])
+print(img2.shape)
