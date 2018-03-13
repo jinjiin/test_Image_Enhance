@@ -36,7 +36,7 @@ print("--------------------------matches--------------------------")
 print(matches)
 
 #store all the good matches as per Lowe's ratio test
-"""good = []
+good = []
 for m, n in matches:
     if m.distance < 0.7*n.distance: # 最优匹配距离/次优匹配距离<0.7，即视为是匹配点
         good.append(m)
@@ -55,9 +55,9 @@ if len(good)>Min_match_count:
 else:
     print("Not enough matched are found %d / %d" %(len(good), Min_match_count))
     matchesMask = None
-"""
+
 # get coordinates of keypoints
-src_pts = np.float32([kp1[m.queryIdx].pt for m,n in matches]).reshape(-1, 1, 2)
+"""src_pts = np.float32([kp1[m.queryIdx].pt for m,n in matches]).reshape(-1, 1, 2)
 dst_pts = np.float32([kp2[m.trainIdx].pt for m,n in matches]).reshape(-1, 1, 2)
 print("src_pts")
 print(src_pts)
@@ -75,7 +75,7 @@ draw_params = dict(matchColor=(0,255,0),
                    matchesMask=matchesMask,
                    flags=0)
 img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
-"""print(np.min(src_pts, axis=1))
+print(np.min(src_pts, axis=1))
 print(np.min(src_pts, axis=1)[0][0])  # 1508.54
 print(np.min(src_pts, axis=1)[0][1])  # 2.6525
 print(np.max(src_pts, axis=1))
