@@ -64,7 +64,7 @@ print(src_pts)
 print("dst_pts")
 print(dst_pts)
 # Need to draw only good matches, so create a mask
-"""matchesMask = [[0,0] for i in range(len(matches))]
+matchesMask = [[0,0] for i in range(len(matches))]
 
 # ratio test as per Lowe's paper
 for i,(m,n) in enumerate(matches):
@@ -74,11 +74,13 @@ draw_params = dict(matchColor=(0,255,0),
                    singlePointColor=(255,0,0),
                    matchesMask=matchesMask,
                    flags=0)
-img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)"""
-print(np.min(src_pts, axis=1)[0][0])
-print(np.min(src_pts, axis=1)[0][1])
-print(np.max(src_pts, axis=1)[0][0])
-print(np.max(src_pts, axis=1)[0][1])
+img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
+"""print(np.min(src_pts, axis=1))
+print(np.min(src_pts, axis=1)[0][0])  # 1508.54
+print(np.min(src_pts, axis=1)[0][1])  # 2.6525
+print(np.max(src_pts, axis=1))
+print(np.max(src_pts, axis=1)[0][0])  # 1508.54
+print(np.max(src_pts, axis=1)[0][1])  # 2.6525
 # 改为分别在两张图中画框
 cv2.rectangle(img1, (np.min(src_pts, axis=1)[0][0], np.min(src_pts, axis=1)[0][1]),
                (np.max(src_pts, axis=1)[0][0], np.max(src_pts, axis=1)[0][1]),
@@ -87,5 +89,4 @@ cv2.rectangle(img2, (np.min(dst_pts, axis=1)[0][0], np.min(dst_pts, axis=1)[0][1
                (np.max(dst_pts, axis=1)[0][0], np.max(dst_pts, axis=1)[0][1]),
                (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_1.jpg", img1)
-cv2.imwrite("test_2.jpg", img2)
-
+cv2.imwrite("test_2.jpg", img2)"""
