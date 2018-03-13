@@ -81,7 +81,7 @@ def getmin_max_coor(pts, matchesMask):
     coordinates = []
     for i in range(len(matchesMask)-1):
         if matchesMask[i] == 1:
-            coordinates.append(pts)
+            coordinates.append(pts[i])
     coordinates = np.float32([coordinates]).reshape(-1, 1, 2)
     a = tuple(np.max(coordinates, axis=0)[0])
     b = tuple(np.min(coordinates, axis=0)[0])
@@ -90,9 +90,9 @@ def getmin_max_coor(pts, matchesMask):
     return a, b
 
 # 改为分别在两张图中画框
-orimax, orimin = getmin_max_coor(src_pts)
+orimax, orimin = getmin_max_coor(src_pts, matchesMask)
 cv2.rectangle(img1, orimin, orimax, (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_1.jpg", img1)
-cv2.rectangle(img2, tuple(np.float32(cv2.perspectiveTransform(np.float32(orimin).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]),
-  tuple(np.float32(cv2.perspectiveTransform(np.float32(orimax).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]), (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
+# cv2.rectangle(img2, tuple(np.float32(cv2.perspectiveTransform(np.float32(orimin).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]),
+#  tuple(np.float32(cv2.perspectiveTransform(np.float32(orimax).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]), (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_2.jpg", img2)
