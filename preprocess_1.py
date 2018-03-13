@@ -54,11 +54,7 @@ if len(good) > Min_match_count:
 else:
     print("Not enough matched are found %d / %d" %(len(good), Min_match_count))
     matchesMask = None
-print(matchesMask)
-print(len(matchesMask))
-print(len(kp1))
-print(len(src_pts))
-cv2.imwrite("test_img2_no_line.jpg",img2)
+
 """draw_params = dict(matchColor= (0,255,0),  # draw matches in green color
                    singlePointColor= None,
                    matchesMask= matchesMask,  # draw only inliers
@@ -81,19 +77,22 @@ draw_params = dict(matchColor=(0,255,0),
                    flags=0)
 img3 = cv2.drawMatchesKnn(img1, kp1, img2, kp2, matches, None, **draw_params)
 cv2.imwrite("test_no_homo.jpg", img3)"""
+def getmin_max_coor(pts, matchesMask):
+    coordinates = []
+    for i in range(len(matchesMask)-1):
+        if matchesMask[i] == 1:
+            coordinates.append(pts)
+    coordinates = np.float32([coordinates]).reshape(-1, 1, 2)
+    a = tuple(np.max(coordinates, axis=0)[0])
+    b = tuple(np.min(coordinates, axis=0)[0])
+    print(a)
+    print(b)
+    return a, b
 
-"""print(np.min(src_pts, axis=1))
-print(np.min(src_pts, axis=1)[0][0])  # 1508.54
-print(np.min(src_pts, axis=1)[0][1])  # 2.6525
-print(np.max(src_pts, axis=1))
-print(np.max(src_pts, axis=1)[0][0])  # 1508.54
-print(np.max(src_pts, axis=1)[0][1])  # 2.6525
 # 改为分别在两张图中画框
-cv2.rectangle(img1, (np.min(src_pts, axis=1)[0][0], np.min(src_pts, axis=1)[0][1]),
-               (np.max(src_pts, axis=1)[0][0], np.max(src_pts, axis=1)[0][1]),
-               (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
-cv2.rectangle(img2, (np.min(dst_pts, axis=1)[0][0], np.min(dst_pts, axis=1)[0][1]),
-               (np.max(dst_pts, axis=1)[0][0], np.max(dst_pts, axis=1)[0][1]),
-               (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
+orimax, orimin = getmin_max_coor(src_pts)
+cv2.rectangle(img1, orimin, orimax, (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
 cv2.imwrite("test_1.jpg", img1)
-cv2.imwrite("test_2.jpg", img2)"""
+cv2.rectangle(img2, tuple(np.float32(cv2.perspectiveTransform(np.float32(orimin).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]),
+  tuple(np.float32(cv2.perspectiveTransform(np.float32(orimax).reshape(-1, 1, 2), M)).reshape(-1, 1, 2)[0][0]), (255, 255, 0), 3) #(255, 255, 0)是huang色,3是线的宽度
+cv2.imwrite("test_2.jpg", img2)
