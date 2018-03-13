@@ -27,7 +27,10 @@ search_params = dict(checks=50)
 
 src_pts = np.float32([kp1[i].pt for i in range(len(kp1))]).reshape(-1, 1, 2)
 dst_pts = np.float32([kp2[i].pt for i in range(len(kp2))]).reshape(-1, 1, 2)
-
+print("src_pts")
+print(src_pts)
+print("dst_pts")
+print(dst_pts)
 M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 matchesMask = mask.ravel().tolist()
 
