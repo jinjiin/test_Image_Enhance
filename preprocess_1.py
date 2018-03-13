@@ -25,8 +25,8 @@ Flann_index_kdtree = 0
 index_params = dict(algorithm=Flann_index_kdtree, trees=5)
 search_params = dict(checks=50)
 
-src_pts = np.float32([kp1[i].pt for i in range(kp1)]).reshape(-1, 1, 2)
-dst_pts = np.float32([kp2[i].pt for i in range(kp2)]).reshape(-1, 1, 2)
+src_pts = np.float32([kp1[i].pt for i in range(len(kp1))]).reshape(-1, 1, 2)
+dst_pts = np.float32([kp2[i].pt for i in range(len(kp2))]).reshape(-1, 1, 2)
 
 M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 matchesMask = mask.ravel().tolist()
