@@ -105,6 +105,6 @@ cv2.imwrite("test_2.jpg", img2)"""
 
 img1 = img1[int(min(orimin[1], orimax[1])):int(max(orimin[1], orimax[1])), int(min(orimin[0], orimax[0])):int(max(orimin[0], orimax[0]))]
 img2 = img2[int(min(phomin[1], phomax[1])):int(max(phomin[1], phomax[1])), int(min(phomin[0], phomax[0])):int(max(phomin[0], phomax[0]))]
-img1 = cv2.resize(img1, (img2.shape[0], img2.shape[1]), interpolation=cv2.INTER_CUBIC)
+img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC)
 cv2.imwrite("test_1.jpg", img1)
 cv2.imwrite("test_2.jpg", img2)

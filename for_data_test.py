@@ -16,6 +16,7 @@ img2 = img2[9:2079, int(1051):3263]
 cv2.imwrite("test_cut.jpg", img2)
 print(img2.shape)
 
-img3 = cv2.resize(img2, (int(img2.shape[0]/2), int(img2.shape[1]/2)), interpolation=cv2.INTER_CUBIC)
+img = cv2.imread('cut_1.jpg')
+img3 = cv2.resize(img, (1464, 1523), interpolation=cv2.INTER_CUBIC)
 cv2.imwrite("test_resize.jpg", img3)
 
