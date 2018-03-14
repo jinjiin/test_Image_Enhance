@@ -2,6 +2,7 @@
 import numpy as np
 import cv2
 import os
+import multiprocess as mp
 
 def preprocess(img1num):
     Min_match_count = 10
@@ -62,8 +63,13 @@ def preprocess(img1num):
 
 def getfilenames(dir):
     files = os.listdir(dir)
+    filenames = []
     for i in files:
-        print(i, type(i))
-
+        filenames.append(i.split('.')[0])
+    return filenames
 if __name__=='__main__':
-    grtfilenames('test_image\\original_images\\canon')
+    filenames = getfilenames('test_image\\original_images\\canon')
+    p = mp.pool(processes=10)
+    p.map_async(preprocess, filenames)
+    p.close()
+    p.join()
