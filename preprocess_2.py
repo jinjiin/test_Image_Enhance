@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*
 import numpy as np
 import cv2
+import os
 
 def preprocess(img1num):
     Min_match_count = 10
@@ -57,3 +58,12 @@ def preprocess(img1num):
     img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC)
     cv2.imwrite('test_image/resize_images/canon/' + img1num+'.jpg', img1)
     cv2.imwrite('test_image/resize_images/iphone/' + img1num+'.jpg', img2)
+
+
+def getfilenames(dir):
+    files = os.listdir(dir)
+    for i in files:
+        print(i, type(i))
+
+if __name__=='__main__':
+    grtfilenames('test_image\\original_images\\canon')
