@@ -70,15 +70,20 @@ def rotation(img):
     print('---------------------')
     print(result2)
 
-def NCC():
-    img1 = cv2.imread('cut_images/cut_1.jpg', 0)
-    img2 = cv2.imread('cut_images/cut_2.jpg', 0)
-    corr = signal.correlate2d(img1, img2, boundary='fill', mode='same')
-    print(corr)
-    print(type(img1))
-    print(img1.shape)
-    print(img1[0][0])
-    print(img1[50][50])
+def NCC(frag1, frag2):
+    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    img2 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    print(img2)
+    sum = 0
+    for i in img2.mean(axis=0).tolist():
+        sum = sum + i
+    print(sum/len(img2.mean(axis=0).tolist()))
+    sum = 0
+    for i in img2.mean(axis=1).tolist():
+        sum = sum + i
+    print(sum / len(img2.mean(axis=1).tolist()))
+    print(img2.mean(axis=0).mean())
+    print(img2.mean(axis=1).mean())
 if __name__ == '__main__':
-    NCC()
+    NCC(0,1)
 
