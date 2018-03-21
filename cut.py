@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from numpy.fft import irfft, rfft
 import math
-import multiprocess as mp
+from multiprocessing import Pool
 from pathos.multiprocessing import ProcessingPool
 
 def cut():
@@ -71,11 +71,27 @@ def detect_pathes(img1, img2, picnum):
             if weidth2+50 < weidth and height2+50 < height:  # right down
                 frag5 = img2[weidth1+50: weidth2+50, height1+50: height2+50]
             args = [(frag, frag1), (frag, frag2), (frag, frag3), (frag, frag4), (frag, frag5)]
-            results = []
-            p = mp.pool(nodes=5)
-            results.append(p.map_async(for_mp_pack(args)))
+            p = Pool(5)
+            results = p.map(for_mp_pack(args))
             p.close()
             p.join()
+            for i in range(len(results)-1):
+                if results[i] > 0.9:
+                    if i == 0:
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag1)
+                        cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                    elif i == 1:
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag2)
+                        cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                    elif i == 2:
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag3)
+                        cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                    elif i == 3:
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag4)
+                        cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                    elif i == 4:
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag5)
+                        cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
 
 def for_mp_pack(args):
     NCC(args[0], args[1])
