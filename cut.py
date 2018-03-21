@@ -62,14 +62,20 @@ def detect_pathes(img1, img2, picnum):
                 height2 = height
             frag = img1[weidth1: weidth2, height1: height2]
             frag1 = img2[weidth1: weidth2, height1: height2]
+            args = []
+            args.append((frag, frag1))
             if height1-50 >= 0 and height2-50 >= 0:  # 其实后面的height2-50>=0可以去掉
                 frag2 = img2[weidth1: weidth2, height1-50: height2-50]  # down
+                args.append((frag, frag2))
             if weidth2+50 < weidth and height1-50 >= 0:
                 frag3 = img2[weidth1+50: weidth2+50, height1-50: height2-50]  # right up
+                args.append((frag, frag3))
             if weidth2+50 < weidth:
                 frag4 = img2[weidth1+50: weidth2+50, height1: height2]  # right
+                args.append((frag, frag4))
             if weidth2+50 < weidth and height2+50 < height:  # right down
                 frag5 = img2[weidth1+50: weidth2+50, height1+50: height2+50]
+                args.append((frag, frag5))
             args = [(frag, frag1), (frag, frag2), (frag, frag3), (frag, frag4), (frag, frag5)]
             p = Pool(5)
             results = p.map(for_mp_pack(args))
@@ -78,7 +84,7 @@ def detect_pathes(img1, img2, picnum):
             for i in range(len(results)-1):
                 if results[i] > 0.9:
                     if i == 0:
-                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag1)
+                        cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[i][1])
                         cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
                     elif i == 1:
                         cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", frag2)
@@ -176,4 +182,6 @@ if __name__ == '__main__':
     img1 = np.reshape(img1, [1, 100*100])
     img2 = np.reshape(img2, [1, 100*100])
     print(normxcorr2(img1, img2))"""
-    print(NCC())
+    img1 = cv2.imread('cut_images\\cut_1.jpg', 0)
+    img2 = cv2.imread('cut_images\\cut_2.jpg', 0)
+    detect_pathes(img1, img2, 0)
