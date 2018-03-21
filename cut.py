@@ -72,12 +72,12 @@ def rotation(img):
     print(result2)
 
 def NCC(frag1, frag2):
-    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
-    print(img1)
-    mean1 = np.mean(img1, axis=(0, 1))
-    print(mean1)
-    mean2 = np.mean(img2, axis=(0, 1))
+    img1 = cv2.imread('cut_images\\canon\\31.jpg', 0)
+    img2 = cv2.imread('cut_images\\iphone\\30.jpg', 0)
+    #mean1 = np.mean(img1, axis=(0, 1))
+    #mean2 = np.mean(img2, axis=(0, 1))
+    mean1 = img1.mean()
+    mean2 = img2.mean()
     weidth = img1.shape[0]
     height = img1.shape[1]
     A = 0
@@ -92,9 +92,6 @@ def NCC(frag1, frag2):
             C = img1[i][j] * img2[i][j] + C
 
     return C/(math.sqrt(A)*math.sqrt(B))
-    """A = np.sum(img1 * img2)
-    B = np.sum(img1 * img1) * np.sum(img2 * img2)
-    return A/(np.sqrt(B))"""
 def test_NCC(x, y):
     xcorr = lambda x, y: irfft(rfft(x) * rfft(y[::-1]))
     img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
