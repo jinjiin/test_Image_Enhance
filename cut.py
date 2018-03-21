@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 import cv2
 import numpy as np
-from numpy.fft import irfft, rfft
+from numpy.fft import irfft, rfft, fft
 import math
 
 
@@ -55,7 +55,6 @@ def rotation():
         cv2.imshow('colorhist', h)
         cv2.waitKey(0)
 
-
 def rotation(img):
     result = cv2.calcHist([img],
                           [0],  # 使用的通道
@@ -71,7 +70,7 @@ def rotation(img):
     print('---------------------')
     print(result2)
 
-def NCC(frag1, frag2):
+def NCC():
     img1 = cv2.imread('cut_images\\canon\\31.jpg', 0)
     img2 = cv2.imread('cut_images\\iphone\\30.jpg', 0)
     #mean1 = np.mean(img1, axis=(0, 1))
@@ -98,5 +97,23 @@ def test_NCC(x, y):
     img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
     print(xcorr(img1, img2))
     return xcorr
+
+def conv2(a,b):
+    ma,na = a.shape
+    mb,nb = b.shape
+    return np.fft.ifft2(np.fft.fft2(a,[2*ma-1,2*na-1])*np.fft.fft2(b,[2*mb-1,2*nb-1]))
+
+# compute a normalized 2D cross correlation using convolutions
+# this will give the same output as matlab, albeit in row-major order
+def normxcorr2(b,a):
+    c = conv2(a, np.flipud(np.fliplr(b)))
+    a = conv2(a ** 2, np.ones(b.shape))
+    b = sum(b.flatten()**2)
+    c = c / np.sqrt(a * b)
+    return c
 if __name__ == '__main__':
-    print(NCC(1, 2))
+    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
+    img1 = np.reshape(img1, [1, 100*100])
+    img2 = np.reshape(img2, [1, 100*100])
+    print(normxcorr2(img1, img2))
