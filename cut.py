@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*
 import cv2
 import numpy as np
-from numpy.fft import irfft, rfft, fft
+from numpy.fft import irfft, rfft
 import math
-
+import multiprocess as mp
+from pathos.multiprocessing import ProcessingPool
 
 def cut():
     img2 = cv2.imread('cut_images\\cut_1.jpg')
@@ -39,6 +40,7 @@ def cut():
             num = num + 1
 
 def detect_pathes(img1, img2, picnum):
+    global frag2, frag3, frag4, frag5
     shape = img1.shape
     weidth = shape[0]
     height = shape[1]
@@ -58,8 +60,25 @@ def detect_pathes(img1, img2, picnum):
             elif j == maxj:
                 height1 = height - 100
                 height2 = height
-            frag1 = img1[weidth1:weidth2, height1:height2]
-            for
+            frag = img1[weidth1: weidth2, height1: height2]
+            frag1 = img2[weidth1: weidth2, height1: height2]
+            if height1-50 >= 0 and height2-50 >= 0:  # 其实后面的height2-50>=0可以去掉
+                frag2 = img2[weidth1: weidth2, height1-50: height2-50]  # down
+            if weidth2+50 < weidth and height1-50 >= 0:
+                frag3 = img2[weidth1+50: weidth2+50, height1-50: height2-50]  # right up
+            if weidth2+50 < weidth:
+                frag4 = img2[weidth1+50: weidth2+50, height1: height2]  # right
+            if weidth2+50 < weidth and height2+50 < height:  # right down
+                frag5 = img2[weidth1+50: weidth2+50, height1+50: height2+50]
+            args = [(frag, frag1), (frag, frag2), (frag, frag3), (frag, frag4), (frag, frag5)]
+            results = []
+            p = mp.pool(nodes=5)
+            results.append(p.map_async(for_mp_pack(args)))
+            p.close()
+            p.join()
+
+def for_mp_pack(args):
+    NCC(args[0], args[1])
 
 def rotation():
     img = cv2.imread('cut_images\\canon\\63.jpg', 0)
@@ -92,11 +111,11 @@ def rotation(img):
     print('---------------------')
     print(result2)
 
-def NCC():
-    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
-    #mean1 = np.mean(img1, axis=(0, 1))
-    #mean2 = np.mean(img2, axis=(0, 1))
+def NCC(img1, img2):
+    # img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    # img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
+    # mean1 = np.mean(img1, axis=(0, 1))
+    # mean2 = np.mean(img2, axis=(0, 1))
     img1 = np.int32(img1)
     img2 = np.int32(img2)
     mean1 = img1.mean()
