@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*
 import cv2
 import numpy as np
-from scipy import signal
-from scipy import misc
+from numpy.fft import irfft, rfft
+
 
 def cut():
     img2 = cv2.imread('cut_images\\cut_1.jpg')
@@ -71,19 +71,28 @@ def rotation(img):
     print(result2)
 
 def NCC(frag1, frag2):
+    img1 = cv2.imread('cut_images\\canon\\63.jpg')
+    img2 = cv2.imread('cut_images\\iphone\\63.jpg')
+
+    mean1 = np.mean(img1, axis=(0, 1))
+    mean2 = np.mean(img2, axis=(0, 1))
+    weidth = img1.shape[0]
+    height = img1.shape[1]
+    for i in range(weidth-1):
+        for j in range(height-1):
+            img1[i][j] = img1[i][j] - mean1
+    for i in range(weidth-1):
+        for j in range(height-1):
+            img2[i][j] = img2[i][j] - mean2
+    A = np.sum(img1 * img2)
+    B = np.sum(img1 * img1) * np.sum(img2 * img2)
+    return A/(np.sqrt(B))
+def test_NCC(x, y):
+    xcorr = lambda x, y: irfft(rfft(x) * rfft(y[::-1]))
     img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    print(img2)
-    sum = 0
-    for i in img2.mean(axis=0).tolist():
-        sum = sum + i
-    print(sum/len(img2.mean(axis=0).tolist()))
-    sum = 0
-    for i in img2.mean(axis=1).tolist():
-        sum = sum + i
-    print(sum / len(img2.mean(axis=1).tolist()))
-    print(img2.mean(axis=0).mean())
-    print(img2.mean(axis=1).mean())
+    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
+    print(xcorr(img1, img2))
+    return xcorr
 if __name__ == '__main__':
-    NCC(0,1)
+    print(NCC(1, 2))
 
