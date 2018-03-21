@@ -38,6 +38,28 @@ def cut():
             cv2.imwrite('cut_images\\canon\\' + str(num) + ".jpg", img)
             num = num + 1
 
+def detect_pathes(img1, img2, picnum):
+    shape = img1.shape
+    weidth = shape[0]
+    height = shape[1]
+    maxi = int(weidth/100)
+    maxj = int(height/100)
+    for i in range(1, maxi):
+        for j in range(1, maxj):
+            if i < maxi:
+                weidth1 = (i - 1) * 100
+                weidth2 = i * 100
+            elif i == maxi:
+                weidth1 = weidth - 100
+                weidth2 = weidth
+            if j < maxj:
+                height1 = (j - 1) * 100
+                height2 = j * 100
+            elif j == maxj:
+                height1 = height - 100
+                height2 = height
+            frag1 = img1[weidth1:weidth2, height1:height2]
+            for
 
 def rotation():
     img = cv2.imread('cut_images\\canon\\63.jpg', 0)
@@ -71,10 +93,12 @@ def rotation(img):
     print(result2)
 
 def NCC():
-    img1 = cv2.imread('cut_images\\canon\\31.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\30.jpg', 0)
+    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
     #mean1 = np.mean(img1, axis=(0, 1))
     #mean2 = np.mean(img2, axis=(0, 1))
+    img1 = np.int32(img1)
+    img2 = np.int32(img2)
     mean1 = img1.mean()
     mean2 = img2.mean()
     weidth = img1.shape[0]
@@ -112,8 +136,9 @@ def normxcorr2(b,a):
     c = c / np.sqrt(a * b)
     return c
 if __name__ == '__main__':
-    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
+    """img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
     img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
     img1 = np.reshape(img1, [1, 100*100])
     img2 = np.reshape(img2, [1, 100*100])
-    print(normxcorr2(img1, img2))
+    print(normxcorr2(img1, img2))"""
+    print(NCC())
