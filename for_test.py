@@ -10,12 +10,23 @@ def work(a, b):
 
 if __name__=="__main__":
 
-    p = ProcessingPool(processes=4)
+    """p = ProcessingPool(processes=4)
     result = (p.map(work, x, y))  #如何获取返回值
     p.close()
     p.join()
-    print(result)
+    print(result)"""
     """pool = ProcessingPool(nodes=4) # 如何传入多个参数
     pool.map(work, [1, 2, 3], [1, 1, 1])
     pool.close()
     pool.join()"""
+    for i in range(1, len(x)):
+        for j in range(1, len(y)):
+            print(i, j)
+            for i in range(1, 3):
+                x.append([2])
+                y.append(1)
+            p = ProcessingPool(processes=4)
+            result = (p.map(work, x, y))
+    p.close()
+    p.join()
+

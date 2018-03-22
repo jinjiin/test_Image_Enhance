@@ -63,30 +63,31 @@ def detect_pathes(img1, img2, picnum):
             frag = img1[weidth1: weidth2, height1: height2]
             frag1 = img2[weidth1: weidth2, height1: height2]
             args = []
+            movelen = 20
             args.append(frag1)
-            if height1+50 <= height and height2+50 <= height:  # 其实后面的height1+50<=height可以去掉
-                frag2 = img2[weidth1: weidth2, height1+50: height2+50]  # down
+            if height1+movelen <= height and height2+movelen <= height:  # 其实后面的height1+movelen<=height可以去掉
+                frag2 = img2[weidth1: weidth2, height1+movelen: height2+movelen]  # down
                 args.append(frag2)
-            if weidth2+50 < weidth and height1-50 >= 0:
-                frag3 = img2[weidth1+50: weidth2+50, height1-50: height2-50]  # right up
+            if weidth2+movelen < weidth and height1-movelen >= 0:
+                frag3 = img2[weidth1+movelen: weidth2+movelen, height1-movelen: height2-movelen]  # right up
                 args.append(frag3)
-            if weidth2+50 < weidth:
-                frag4 = img2[weidth1+50: weidth2+50, height1: height2]  # right
+            if weidth2+movelen < weidth:
+                frag4 = img2[weidth1+movelen: weidth2+movelen, height1: height2]  # right
                 args.append(frag4)
-            if weidth2+50 < weidth and height2+50 < height:  # right down
-                frag5 = img2[weidth1+50: weidth2+50, height1+50: height2+50]
+            if weidth2+movelen < weidth and height2+movelen < height:  # right down
+                frag5 = img2[weidth1+movelen: weidth2+movelen, height1+movelen: height2+movelen]
                 args.append(frag5)
             args1 = []
-            for i in range(len(args)):
+            for l in range(len(args)):
                 args1.append(frag)
-            # args = [(frag, frag1), (frag, frag2), (frag, frag3), (frag, frag4), (frag, frag5)]
+
             p = ProcessingPool(5)
             results = p.map(NCC, args1, args)
 
             
-            for i in range(len(results)-1):
-                if results[i] > 0.8:
-                    cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[i])
+            for k in range(len(results)-1):
+                if results[k] > 0.5:
+                    cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[k])
                     cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
                     picnum = picnum + 1
                     print(picnum)
