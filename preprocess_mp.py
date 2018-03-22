@@ -7,8 +7,8 @@ import multiprocess as mp
 def preprocess(img1num):
     Min_match_count = 10
     cv2.ocl.setUseOpenCL(False)
-    img1 = cv2.imread('test_image/original_images/canon/' + img1num+'.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
-    img2 = cv2.imread('test_image/original_images/iphone/' + img1num+'.jpg')
+    img1 = cv2.imread('original_images/train/canon/' + img1num+'.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
+    img2 = cv2.imread('original_images/train/sony/' + img1num+'.jpg')
     sift = cv2.xfeatures2d.SIFT_create()
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)
@@ -57,9 +57,8 @@ def preprocess(img1num):
     img2 = img2[int(min(phomin[1], phomax[1])):int(max(phomin[1], phomax[1])),
            int(min(phomin[0], phomax[0])):int(max(phomin[0], phomax[0]))]
     img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC)
-    cv2.imwrite('test_image/resize_images/canon/' + img1num+'.jpg', img1)
-    cv2.imwrite('test_image/resize_images/iphone/' + img1num+'.jpg', img2)
-
+    cv2.imwrite('resize_images/sony/canon/' + img1num+'.jpg', img1)
+    cv2.imwrite('resize_images/sony/iphone/' + img1num+'.jpg', img2)
 
 def getfilenames(dir):
     files = os.listdir(dir)
@@ -68,8 +67,8 @@ def getfilenames(dir):
         filenames.append(i.split('.')[0])
     return filenames
 if __name__=='__main__':
-    filenames = getfilenames('test_image\\original_images\\canon')
-    p = mp.pool(processes=10)
+    filenames = getfilenames('original_images/train/sony')
+    p = mp.Pool(processes=10)
     p.map_async(preprocess, filenames)
     p.close()
     p.join()

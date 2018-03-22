@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*
 import cv2
 import numpy as np
-from numpy.fft import irfft, rfft
 import math
-from multiprocessing import Pool
+import os
 from pathos.multiprocessing import ProcessingPool
 
 def cut():
@@ -82,11 +81,11 @@ def detect_pathes(img1, img2, picnum):
                 args1.append(frag)
 
             p = ProcessingPool(5)
-            results = p.map(NCC, args1, args)
+            results = p.map(NCC_colors, args1, args)
 
             
             for k in range(len(results)-1):
-                if results[k] > 0.6:
+                if results[k] > 0.55:
                     cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[k])
                     cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
                     picnum = picnum + 1
@@ -95,39 +94,7 @@ def detect_pathes(img1, img2, picnum):
                 print(NCC(args1[i], args[i]))"""
     p.close()
     p.join()
-def for_mp_pack(args):
-    NCC(args[0], args[1])
-
-def rotation():
-    img = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
-    h = np.zeros((256, 256, 3))  # 创建用于绘制直方图的全0图像
-    bins = np.arange(256).reshape(256, 1)  # 直方图中各bin的顶点位置
-    color = [(255, 0, 0), (0, 255, 0), (0, 0, 255)]  # BGR三种颜色
-    for ch, col in enumerate(color):
-        originHist = cv2.calcHist([img], [ch], None, [256], [0, 256])
-        cv2.normalize(originHist, originHist, 0, 255 * 0.9, cv2.NORM_MINMAX)
-        hist = np.int32(np.around(originHist))
-        pts = np.column_stack((bins, hist))
-        cv2.polylines(h, [pts], False, col)
-        h = np.flipud(h)
-        cv2.imshow('colorhist', h)
-        cv2.waitKey(0)
-
-def rotation(img):
-    result = cv2.calcHist([img],
-                          [0],  # 使用的通道
-                          None,  # 没有使用mask
-                          [256],  # HistSize
-                          [0.0, 255.0])  # 直方图柱的范围
-    print(result)
-    result2 = cv2.calcHist([img2],
-                           [0],  # 使用的通道
-                           None,  # 没有使用mask
-                           [256],  # HistSize
-                           [0.0, 255.0])  # 直方图柱的范围
-    print('---------------------')
-    print(result2)
+    return picnum
 
 def NCC_grey(img1, img2):
     # img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
@@ -157,32 +124,29 @@ def NCC_colors(img1, img2):
     img2 = np.int32(img2)
     mean1 = np.mean(img1, axis=(0, 1))
     mean2 = np.mean(img2, axis=(0, 1))
-def test_NCC(x, y):
-    xcorr = lambda x, y: irfft(rfft(x) * rfft(y[::-1]))
-    img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
-    print(xcorr(img1, img2))
-    return xcorr
+    """weidth = img1.shape[0]
+    height = img1.shape[1]
+    for i in range(weidth - 1):
+        for j in range(height - 1):
+            img1[i][j] = img1[i][j] - mean1
+            img2[i][j] = img2[i][j] - mean2"""
+    img1 = img1 - mean1
+    img2 = img2 - mean2
+    A = np.sum(img1 * img2)
+    B = np.sum(img1 * img1)
+    C = np.sum(img2 * img2)
+    return A/(math.sqrt(B)*math.sqrt(C))
 
-def conv2(a,b):
-    ma,na = a.shape
-    mb,nb = b.shape
-    return np.fft.ifft2(np.fft.fft2(a,[2*ma-1,2*na-1])*np.fft.fft2(b,[2*mb-1,2*nb-1]))
-
-# compute a normalized 2D cross correlation using convolutions
-# this will give the same output as matlab, albeit in row-major order
-def normxcorr2(b,a):
-    c = conv2(a, np.flipud(np.fliplr(b)))
-    a = conv2(a ** 2, np.ones(b.shape))
-    b = sum(b.flatten()**2)
-    c = c / np.sqrt(a * b)
-    return c
+def getfilenames(dir):
+    files = os.listdir(dir)
+    filenames = []
+    for i in files:
+        filenames.append(i.split('.')[0])
+    return filenames
 if __name__ == '__main__':
-    """img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
-    img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
-    img1 = np.reshape(img1, [1, 100*100])
-    img2 = np.reshape(img2, [1, 100*100])
-    print(normxcorr2(img1, img2))"""
-    img1 = cv2.imread('cut_images\\cut_1.jpg', 0)
-    img2 = cv2.imread('cut_images\\cut_2.jpg', 0)
-    detect_pathes(img1, img2, 0)
+    filenames = getfilenames('resize/sony/sony')
+    patchnum = 0
+    for num in filenames:
+        img1 = cv2.imread('resize/sony/sony' + str(num) + '.jpg')
+        img2 = cv2.imread('resize/sony/canon' + str(num) + '.jpg')
+        patchnum = detect_pathes(img1, img2, patchnum)
