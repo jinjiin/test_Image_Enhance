@@ -3,14 +3,14 @@ from pathos.multiprocessing import ProcessingPool
 x = [1,2,3,4,5,6]
 y = [1,1,1,1,1,1]
 x_y = zip(x, y)
-def work(a):
+def work(a, b):
     return (a+8)
 
 
 if __name__=="__main__":
 
-    p = Pool(processes=4)
-    result = (p.map(work, x))  #如何获取返回值
+    p = ProcessingPool(processes=4)
+    result = (p.map(work, x, y))  #如何获取返回值
     p.close()
     p.join()
     print(result)
