@@ -59,12 +59,9 @@ def detect_pathes(img1, img2, picnum):
             elif j == maxj:
                 height1 = height - 100
                 height2 = height
+            print(i, j)
             frag = img1[weidth1: weidth2, height1: height2]
             frag1 = img2[weidth1: weidth2, height1: height2]
-            frag2 = 1
-            frag3 = 1
-            frag4 = 1
-            frag5 = 1
             args = []
             args.append(frag1)
             if height1+50 <= height and height2+50 <= height:  # 其实后面的height1+50<=height可以去掉
@@ -82,20 +79,21 @@ def detect_pathes(img1, img2, picnum):
             args1 = []
             for i in range(len(args)):
                 args1.append(frag)
-            print(args[0])
             # args = [(frag, frag1), (frag, frag2), (frag, frag3), (frag, frag4), (frag, frag5)]
-            """p = ProcessingPool(5)
+            p = ProcessingPool(5)
             results = p.map(NCC, args1, args)
-            p.close()
-            p.join()
+
             
             for i in range(len(results)-1):
-                if results[i] > 0.9:
-                    cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[i][1])
-                    cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)"""
-            for i in range(len(args)):
-                print(NCC(args1[i], args[i]))
-
+                if results[i] > 0.8:
+                    cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[i])
+                    cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                    picnum = picnum + 1
+                    print(picnum)
+            """for i in range(len(args)):
+                print(NCC(args1[i], args[i]))"""
+    p.close()
+    p.join()
 def for_mp_pack(args):
     NCC(args[0], args[1])
 
