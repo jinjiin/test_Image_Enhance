@@ -63,7 +63,7 @@ def detect_pathes(img1, img2, picnum):
             frag = img1[weidth1: weidth2, height1: height2]
             frag1 = img2[weidth1: weidth2, height1: height2]
             args = []
-            movelen = 20
+            movelen = 10
             args.append(frag1)
             if height1+movelen <= height and height2+movelen <= height:  # 其实后面的height1+movelen<=height可以去掉
                 frag2 = img2[weidth1: weidth2, height1+movelen: height2+movelen]  # down
@@ -86,7 +86,7 @@ def detect_pathes(img1, img2, picnum):
 
             
             for k in range(len(results)-1):
-                if results[k] > 0.5:
+                if results[k] > 0.6:
                     cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[k])
                     cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
                     picnum = picnum + 1
@@ -129,7 +129,7 @@ def rotation(img):
     print('---------------------')
     print(result2)
 
-def NCC(img1, img2):
+def NCC_grey(img1, img2):
     # img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
     # img2 = cv2.imread('cut_images\\iphone\\63.jpg', 0)
     # mean1 = np.mean(img1, axis=(0, 1))
@@ -152,6 +152,11 @@ def NCC(img1, img2):
             C = img1[i][j] * img2[i][j] + C
 
     return C/(math.sqrt(A)*math.sqrt(B))
+def NCC_colors(img1, img2):
+    img1 = np.int32(img1)
+    img2 = np.int32(img2)
+    mean1 = np.mean(img1, axis=(0, 1))
+    mean2 = np.mean(img2, axis=(0, 1))
 def test_NCC(x, y):
     xcorr = lambda x, y: irfft(rfft(x) * rfft(y[::-1]))
     img1 = cv2.imread('cut_images\\canon\\63.jpg', 0)
