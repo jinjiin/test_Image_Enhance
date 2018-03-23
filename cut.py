@@ -83,13 +83,17 @@ def detect_pathes(img1, img2, picnum):
             p = ProcessingPool(5)
             results = p.map(NCC_colors, args1, args)
 
-            
+            Flag = -1
+            max = -2
             for k in range(len(results)-1):
-                if results[k] > 0.55:
-                    cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[k])
-                    cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
-                    picnum = picnum + 1
-                    print(picnum)
+                if results[k] > max:
+                    max = results[k]
+                    Flag = k
+            if results[max] > 0.55:
+                cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[max])
+                cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                picnum = picnum + 1
+                print(picnum)
             """for i in range(len(args)):
                 print(NCC(args1[i], args[i]))"""
     p.close()

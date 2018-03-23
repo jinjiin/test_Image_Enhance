@@ -9,6 +9,7 @@ print(I.shape)"""
 import numpy as np
 import tensorflow as tf
 from scipy import misc
+
 PATCH_WIDTH = 100
 PATCH_HEIGHT = 100
 PATCH_SIZE = PATCH_WIDTH * PATCH_HEIGHT * 3
