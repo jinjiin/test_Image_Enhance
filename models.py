@@ -58,13 +58,13 @@ def adversarial(image_):
 
     with tf.variable_scope("discriminator"):
 
-        conv1 = _conv_layer(image_, 48, 11, 4, batch_nn = False)
-        conv2 = _conv_layer(conv1, 128, 5, 2)
-        conv3 = _conv_layer(conv2, 192, 3, 1)
-        conv4 = _conv_layer(conv3, 192, 3, 1)
-        conv5 = _conv_layer(conv4, 128, 3, 2)
+        conv1 = _conv_layer(image_, 48, 11, 4, batch_nn=False)  # [100,100]->[25,25]
+        conv2 = _conv_layer(conv1, 128, 5, 2)                   # [25,25]->[13,13]
+        conv3 = _conv_layer(conv2, 192, 3, 1)                   # [13,13]->[13,13]
+        conv4 = _conv_layer(conv3, 192, 3, 1)                   # [13,13]->[13,13]
+        conv5 = _conv_layer(conv4, 128, 3, 2)                   # [13,13]->[7,7]
         
-        flat_size = 128 * 7 * 7   #怎么算出来的呢
+        flat_size = 128 * 7 * 7
         conv5_flat = tf.reshape(conv5, [-1, flat_size])
 
         W_fc = tf.Variable(tf.truncated_normal([flat_size, 1024], stddev=0.01))
