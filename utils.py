@@ -16,8 +16,8 @@ def _tensor_size(tensor):
 
 def gauss_kernel(kernlen=21, nsig=3, channels=1):
     interval = (2*nsig+1.)/(kernlen)
-    x = np.linspace(-nsig-interval/2., nsig+interval/2., kernlen+1)
-    kern1d = np.diff(st.norm.cdf(x))
+    x = np.linspace(-nsig-interval/2., nsig+interval/2., kernlen+1) # 在指定的间隔内返回均匀间隔的数字
+    kern1d = np.diff(st.norm.cdf(x))  #
     kernel_raw = np.sqrt(np.outer(kern1d, kern1d))
     kernel = kernel_raw/kernel_raw.sum()
     out_filter = np.array(kernel, dtype = np.float32)

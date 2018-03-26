@@ -2,6 +2,7 @@ import scipy.io
 import numpy as np
 import os
 import scipy.misc
+import scipy.stats as st
 
 import multiprocessing as mp
 from pathos.multiprocessing import ProcessingPool
@@ -42,15 +43,15 @@ if __name__=="__main__":
     p.map_async(work1, y)
     p.close()
     p.join()"""
-    VGG_PATH = "vgg_pretrained/imagenet-vgg-verydeep-19.mat"
-    vgg = scipy.io.loadmat(VGG_PATH)
-    print(type(vgg))
-    print(vgg.keys())
-    layers = vgg['layers']
-    # print(layers)
-    print(layers.shape)
-    layer0 = layers[0]
-    print(layer0.shape)
-    print(layer0[0].shape)
-    print(layer0[0][0].shape)
-    print(layer0[0][0][0][0][0])
+    nsig = 3
+    kernlen = 21
+    interval = (2 * nsig + 1.) / (kernlen)
+    x = np.linspace(-nsig - interval / 2., nsig + interval / 2., kernlen + 1)
+    kern1d = np.diff(st.norm.cdf(x))
+    A = np.arange(2, 14).reshape((1, 12))
+    A[0,1] = 8
+    A[0,4] = 20
+    print(A, len(A[0]))
+    print(np.diff(A), len(np.diff(A[0])))
+    print(st.norm.cdf(x))
+    print(kern1d)
