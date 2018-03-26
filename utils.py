@@ -12,12 +12,12 @@ def log10(x):
 
 def _tensor_size(tensor):
     from operator import mul
-    return reduce(mul, (d.value for d in tensor.get_shape()[1:]), 1)
+    return reduce(mul, (d.value for d in tensor.get_shape()[1:]), 1)  # 联乘 reduce(mul, [3,2,3], 1)=18，[1:]相当于是不要batch_size,只计算一个tensor中总的height*weidth*……
 
 def gauss_kernel(kernlen=21, nsig=3, channels=1):
     interval = (2*nsig+1.)/(kernlen)
     x = np.linspace(-nsig-interval/2., nsig+interval/2., kernlen+1) # 在指定的间隔内返回均匀间隔的数字
-    kern1d = np.diff(st.norm.cdf(x))  #
+    kern1d = np.diff(st.norm.cdf(x))  # st.norm.cdf正态累积分布函数，np.diff([1,3,4,7])=[2,1,3]是差分值
     kernel_raw = np.sqrt(np.outer(kern1d, kern1d))
     kernel = kernel_raw/kernel_raw.sum()
     out_filter = np.array(kernel, dtype = np.float32)
@@ -28,6 +28,8 @@ def gauss_kernel(kernlen=21, nsig=3, channels=1):
 def blur(x):
     kernel_var = gauss_kernel(21, 3, 3)
     return tf.nn.depthwise_conv2d(x, kernel_var, [1, 1, 1, 1], padding='SAME')
+    # tf.nn.depthwise_conv2d() return A 4-D Tensor of shape [batch, out_height, out_width, in_channels * channel_multiplier]
+    # tf.nn.conv2d() return A Tensor: Has the same type as input.
 
 def process_command_args(arguments):
 

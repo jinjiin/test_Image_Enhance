@@ -89,6 +89,8 @@ with tf.Graph().as_default(), tf.Session() as sess:
 
     content_size = utils._tensor_size(dslr_vgg[CONTENT_LAYER]) * batch_size
     loss_content = 2 * tf.nn.l2_loss(enhanced_vgg[CONTENT_LAYER] - dslr_vgg[CONTENT_LAYER]) / content_size
+    # content_size = num * height * weidth (of feature map)
+    # tf.nn.l2_loss(a) = sum(a**2)/2
 
     # 3) color loss
 
@@ -102,7 +104,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     batch_shape = (batch_size, PATCH_WIDTH, PATCH_HEIGHT, 3)
     tv_y_size = utils._tensor_size(enhanced[:,1:,:,:])
     tv_x_size = utils._tensor_size(enhanced[:,:,1:,:])
-    y_tv = tf.nn.l2_loss(enhanced[:,1:,:,:] - enhanced[:,:batch_shape[1]-1,:,:])
+    y_tv = tf.nn.l2_loss(enhanced[:,1:,:,:] - enhanced[:,:batch_shape[1]-1,:,:]) # 相邻位置像素相减/x_size，得到梯度值
     x_tv = tf.nn.l2_loss(enhanced[:,:,1:,:] - enhanced[:,:,:batch_shape[2]-1,:])
     loss_tv = 2 * (x_tv/tv_x_size + y_tv/tv_y_size) / batch_size
 

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import math
 import os
-from pathos.multiprocessing import ProcessingPool
+from multiprocessing import Pool
 
 def cut():
     img2 = cv2.imread('cut_images\\cut_1.jpg')
@@ -80,7 +80,8 @@ def detect_pathes(img1, img2, picnum):
             for l in range(len(args)):
                 args1.append(frag)
 
-            p = ProcessingPool(5)
+            #p = ProcessingPool(5)
+            p = Pool(5)
             results = p.map(NCC_colors, args1, args)
 
             maxflag = -1
@@ -90,8 +91,8 @@ def detect_pathes(img1, img2, picnum):
                     max = results[k]
                     maxflag = k
             if results[max] > 0.55:
-                cv2.imwrite('cut_image_2\\iphone\\' + str(picnum) + ".jpg", args[maxflag])
-                cv2.imwrite('cut_image_2\\canon\\' + str(picnum) + ".jpg", frag)
+                cv2.imwrite('patches/sony/sony/' + str(picnum) + ".jpg", args[maxflag])
+                cv2.imwrite('patches/sony/canon/' + str(picnum) + ".jpg", frag)
                 picnum = picnum + 1
                 print(picnum)
             """for i in range(len(args)):
@@ -151,6 +152,6 @@ if __name__ == '__main__':
     filenames = getfilenames('resize/sony/sony')
     patchnum = 0
     for num in filenames:
-        img1 = cv2.imread('resize/sony/sony' + str(num) + '.jpg')
-        img2 = cv2.imread('resize/sony/canon' + str(num) + '.jpg')
+        img1 = cv2.imread('resize/sony/sony/' + str(num) + '.jpg')
+        img2 = cv2.imread('resize/sony/canon/' + str(num) + '.jpg')
         patchnum = detect_pathes(img1, img2, patchnum)
