@@ -50,7 +50,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     dslr_ = tf.placeholder(tf.float32, [None, PATCH_SIZE])
     dslr_image = tf.reshape(dslr_, [-1, PATCH_HEIGHT, PATCH_WIDTH, 3])
 
-    adv_ = tf.placeholder(tf.float32, [None, 1]) # 二维的数据，第一维数据量不确定，第二维数据量为1
+    adv_ = tf.placeholder(tf.float32, [None, 1])
 
     # get processed enhanced image
 

@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*
 from __future__ import print_function
 from scipy import misc
 import os
 import numpy as np
 import sys
 
+# difference of load_test_data and load_batch is whether load all images in dir
 def load_test_data(phone, dped_dir, IMAGE_SIZE):
 
     test_directory_phone = dped_dir + str(phone) + '/test_data/patches/' + str(phone) + '/'
@@ -47,8 +49,8 @@ def load_batch(phone, dped_dir, TRAIN_SIZE, IMAGE_SIZE):
     else:
         TRAIN_IMAGES = np.random.choice(np.arange(0, NUM_TRAINING_IMAGES), TRAIN_SIZE, replace=False)
     # TRAIN_IMAGES是训练图片的编号，如[4 7 5 6 3]
-    train_data = np.zeros((TRAIN_SIZE, IMAGE_SIZE))
-    train_answ = np.zeros((TRAIN_SIZE, IMAGE_SIZE))
+    train_data = np.zeros((TRAIN_SIZE, IMAGE_SIZE))  # phone data
+    train_answ = np.zeros((TRAIN_SIZE, IMAGE_SIZE))  # dslr data
 
     i = 0
     for img in TRAIN_IMAGES:
