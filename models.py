@@ -68,7 +68,7 @@ def adversarial(image_):
         conv5_flat = tf.reshape(conv5, [-1, flat_size])
 
         W_fc = tf.Variable(tf.truncated_normal([flat_size, 1024], stddev=0.01))
-        bias_fc = tf.Variable(tf.constant(0.01, shape=[1024]))
+        bias_fc = tf.Variable(tf.constant(0.01, shape=[1024]))   # 1*1024
 
         fc = leaky_relu(tf.matmul(conv5_flat, W_fc) + bias_fc)
 

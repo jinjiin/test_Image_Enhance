@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import tensorflow as tf
 import numpy as np
 import scipy.io
@@ -20,7 +21,7 @@ def net(path_to_vgg_net, input_image):
         'conv5_1', 'relu5_1', 'conv5_2', 'relu5_2', 'conv5_3',
         'relu5_3', 'conv5_4', 'relu5_4'
     )
-
+    # loadmat VGG19的数据格式：https://blog.csdn.net/cskywit/article/details/79187623
     data = scipy.io.loadmat(path_to_vgg_net)
     weights = data['layers'][0]
 
@@ -30,7 +31,7 @@ def net(path_to_vgg_net, input_image):
         layer_type = name[:4]
         if layer_type == 'conv':
             kernels, bias = weights[i][0][0][0][0]
-            kernels = np.transpose(kernels, (1, 0, 2, 3))
+            kernels = np.transpose(kernels, (1, 0, 2, 3))  # 轴原本是[0,1,2,3], transpose为[1,0,2,3]意思是将第一维与第二位的数据进行交换
             bias = bias.reshape(-1)
             current = _conv_layer(current, kernels, bias)
         elif layer_type == 'relu':
