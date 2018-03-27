@@ -6,6 +6,8 @@ import scipy.stats as st
 
 import multiprocessing as mp
 from pathos.multiprocessing import ProcessingPool
+import matplotlib.pyplot as plt
+
 x = [[1], [2], [3], [4], [5], [6]]
 #x = [1, 2, 3, 4, 5, 6]
 y = [1, 1, 1, 2, 1, 1]
@@ -44,4 +46,7 @@ if __name__=="__main__":
     p.map_async(work1, y)
     p.close()
     p.join()"""
-    print(np.ones((1, 2, 2, 1)))
+    x, y = np.mgrid[1:5,2:4]
+    print(x)
+    print('-------------')
+    print(y)

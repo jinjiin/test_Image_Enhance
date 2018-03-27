@@ -2,7 +2,6 @@
 import numpy as np
 from scipy import signal
 from scipy.ndimage.filters import convolve
-import tensorflow as tf
 
 
 def _FSpecialGauss(size, sigma):
@@ -21,6 +20,7 @@ def _FSpecialGauss(size, sigma):
     return g / g.sum()
 
 
+# filter_size=11是参照论文中的11*11的circular-symmetric Gaussian weighting function
 def _SSIMForMultiScale(img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1=0.01, k2=0.03):
 
     img1 = img1.astype(np.float64)
