@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import numpy as np
 from scipy import signal
 from scipy.ndimage.filters import convolve
@@ -6,7 +7,7 @@ import tensorflow as tf
 
 def _FSpecialGauss(size, sigma):
 
-    radius = size // 2
+    radius = size // 2  # //是取商的整数部分
     offset = 0.0
     start, stop = -radius, radius + 1
 

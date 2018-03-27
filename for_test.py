@@ -25,11 +25,11 @@ if __name__=="__main__":
     p.close()
     p.join()
     print(result)"""
-    pool = ProcessingPool(nodes=4) # 如何传入多个参数
+    """pool = ProcessingPool(nodes=4) # 如何传入多个参数
     result = pool.map(work, [1, 2, 3], [1, 1, 1])
     pool.close()
     pool.join()
-    print(result)
+    print(result)"""
     """for i in range(1, len(x)):
         for j in range(1, len(y)):
             print(i, j)
@@ -44,3 +44,4 @@ if __name__=="__main__":
     p.map_async(work1, y)
     p.close()
     p.join()"""
+    print(np.ones((1, 2, 2, 1)))

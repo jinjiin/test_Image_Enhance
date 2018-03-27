@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import math
 import os
-from multiprocessing import Pool
+from pathos.multiprocessing import ProcessingPool
 
 def cut():
     img2 = cv2.imread('cut_images\\cut_1.jpg')
@@ -58,7 +58,6 @@ def detect_pathes(img1, img2, picnum):
             elif j == maxj:
                 height1 = height - 100
                 height2 = height
-            print(i, j)
             frag = img1[weidth1: weidth2, height1: height2]
             frag1 = img2[weidth1: weidth2, height1: height2]
             args = []
@@ -80,25 +79,28 @@ def detect_pathes(img1, img2, picnum):
             for l in range(len(args)):
                 args1.append(frag)
 
-            #p = ProcessingPool(5)
-            p = Pool(5)
-            results = p.map(NCC_colors, args1, args)
-
+            """p = ProcessingPool(5)
+            results = p.map(NCC_colors, args1, args)"""
+            results = []
+            for i in range(len(args)):
+                results.append(NCC_colors(args1[i], args[i]))
             maxflag = -1
             max = -2
             for k in range(len(results)-1):
                 if results[k] > max:
                     max = results[k]
                     maxflag = k
-            if results[max] > 0.55:
+            if results[maxflag] > 0.55:
                 cv2.imwrite('patches/sony/sony/' + str(picnum) + ".jpg", args[maxflag])
                 cv2.imwrite('patches/sony/canon/' + str(picnum) + ".jpg", frag)
+                """cv2.imwrite('cut_image_2/sony/sony/' + str(picnum) + ".jpg", args[maxflag])
+                cv2.imwrite('cut_image_2/sony/canon/' + str(picnum) + ".jpg", frag)"""
                 picnum = picnum + 1
                 print(picnum)
             """for i in range(len(args)):
                 print(NCC(args1[i], args[i]))"""
-    p.close()
-    p.join()
+    """p.close()
+    p.join()"""
     return picnum
 
 def NCC_grey(img1, img2):
@@ -155,3 +157,6 @@ if __name__ == '__main__':
         img1 = cv2.imread('resize/sony/sony/' + str(num) + '.jpg')
         img2 = cv2.imread('resize/sony/canon/' + str(num) + '.jpg')
         patchnum = detect_pathes(img1, img2, patchnum)
+    """img1 = cv2.imread('1403_1.jpg')
+    img2 = cv2.imread('1403_2.jpg')
+    detect_pathes(img1, img2, 0)"""
