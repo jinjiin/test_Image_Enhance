@@ -84,4 +84,4 @@ def MultiScaleSSIM(img1, img2, max_val=255, filter_size=11, filter_sigma=1.5, k1
         filtered = [convolve(im, downsample_filter, mode='reflect') for im in [im1, im2]]
         im1, im2 = [x[:, ::2, ::2, :] for x in filtered]
 
-    return np.prod(mcs[0:levels-1] ** weights[0:levels-1]) * (mssim[levels-1] ** weights[levels-1])
+    return np.prod(mcs[0:levels-1] ** weights[0:levels-1]) * (mssim[levels-1] ** weights[levels-1])  # np.prod([1,2,3,4]) = 24

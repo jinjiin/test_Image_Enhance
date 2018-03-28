@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import scipy.stats as st
 import tensorflow as tf
 import numpy as np

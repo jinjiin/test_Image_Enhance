@@ -46,7 +46,8 @@ if __name__=="__main__":
     p.map_async(work1, y)
     p.close()
     p.join()"""
-    x, y = np.mgrid[1:5,2:4]
-    print(x)
-    print('-------------')
-    print(y)
+    mcs = np.array([1, 2, 3, 4, 5])
+    weights = np.array([5, 4, 3, 2, 1])
+    levels = 5
+    re = np.prod(mcs[0:levels - 1] ** weights[0:levels - 1])
+    print(re)
