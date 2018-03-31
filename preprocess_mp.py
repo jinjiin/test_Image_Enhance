@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*
+import re
+
 import numpy as np
 import cv2
 import os
@@ -9,11 +11,11 @@ import scipy.misc
 def preprocess(img1num):
     Min_match_count = 10
     cv2.ocl.setUseOpenCL(False)
-    if os.path.exists('resize/sony/sony/' + str(img1num) + '.jpg'):
+    if os.path.exists('dped/mi/resize/mi/' + str(img1num) + '.jpg'):
         print(str(img1num) + '.jpg have existed!')
         return 0
-    img1 = cv2.imread('original_images/train/canon/' + str(img1num) + '.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
-    img2 = cv2.imread('original_images/train/sony/' + str(img1num) + '.jpg')
+    img1 = cv2.imread('dped/mi/full_training_data/mi/' + str(img1num) + '.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
+    img2 = cv2.imread('dped/mi/full_training_data/canon' + str(img1num) + '.jpg')
     sift = cv2.xfeatures2d.SIFT_create()
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)
@@ -63,8 +65,8 @@ def preprocess(img1num):
            int(min(phomin[0], phomax[0])):int(max(phomin[0], phomax[0]))]
     #img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC)
     img1 = scipy.misc.imresize(img1, (img2.shape[0], img2.shape[1]), interp='cubic')
-    cv2.imwrite('resize/sony/canon/' + str(img1num) + '.jpg', img1)
-    cv2.imwrite('resize/sony/sony/' + str(img1num) + '.jpg', img2)
+    cv2.imwrite('dped/mi/resize/mi/' + str(img1num) + '.jpg', img1)
+    cv2.imwrite('dped/mi/resize/canon/' + str(img1num) + '.jpg', img2)
 
 def getfilenames(dir):
     files = os.listdir(dir)
@@ -72,10 +74,17 @@ def getfilenames(dir):
     for i in files:
         filenames.append(i.split('.')[0])
     return filenames
+# rename('D:\采集数据\test\Camera')
+def rename(dir):
+    files = os.listdir(dir)
+    for i in files:
+        print(re.findall(r'[^()]+', i)[1])
+        os.rename(dir + '\\' + i, dir + '\\' + re.findall(r'[^()]+', i)[1] + '.jpg')
 if __name__=='__main__':
-    filenames = getfilenames('original_images/train/sony')
+    filenames = getfilenames('dped/mi/full_training_data/mi')
     print(len(filenames))
     p = mp.Pool(processes=10, maxtasksperchild=15)
-    p.map_async(preprocess, filenames[600:])
+    p.map_async(preprocess, filenames[])
     p.close()
     p.join()
+
