@@ -15,7 +15,7 @@ def preprocess(img1num):
         print(str(img1num) + '.jpg have existed!')
         return 0
     img1 = cv2.imread('dped/mi/full_training_data/mi/' + str(img1num) + '.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
-    img2 = cv2.imread('dped/mi/full_training_data/canon' + str(img1num) + '.jpg')
+    img2 = cv2.imread('dped/mi/full_training_data/canon/' + str(img1num) + '.jpg')
     sift = cv2.xfeatures2d.SIFT_create()
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)
@@ -84,7 +84,7 @@ if __name__=='__main__':
     filenames = getfilenames('dped/mi/full_training_data/mi')
     print(len(filenames))
     p = mp.Pool(processes=10, maxtasksperchild=15)
-    p.map_async(preprocess, filenames[])
+    p.map_async(preprocess, filenames[100:])
     p.close()
     p.join()
 
