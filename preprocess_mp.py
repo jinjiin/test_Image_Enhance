@@ -81,10 +81,10 @@ def rename(dir):
         print(re.findall(r'[^()]+', i)[1])
         os.rename(dir + '\\' + i, dir + '\\' + re.findall(r'[^()]+', i)[1] + '.jpg')
 if __name__=='__main__':
-    filenames = getfilenames('dped/mi/full_training_data/mi')
-    print(len(filenames))
-    p = mp.Pool(processes=10, maxtasksperchild=15)
-    p.map_async(preprocess, filenames[100:])
+    """filenames = getfilenames('dped/mi/full_training_data/mi')
+    print(filenames)"""
+    p = mp.Pool(processes=10)
+    p.map_async(preprocess, list(range(1, 226)))
     p.close()
     p.join()
 

@@ -46,5 +46,4 @@ if __name__=="__main__":
     p.map_async(work1, y)
     p.close()
     p.join()"""
-    for i in range(3):
-        print(i)
+    print(list(range(1,4)))
