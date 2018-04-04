@@ -7,7 +7,6 @@ import os
 import multiprocess as mp
 import scipy.misc
 
-
 def preprocess(img1num):
     Min_match_count = 10
     cv2.ocl.setUseOpenCL(False)
