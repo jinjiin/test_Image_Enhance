@@ -15,5 +15,3 @@ loss_psnr = 20 * np.log10(1.0 / np.sqrt(loss_mse))
 loss_ssim = MultiScaleSSIM(np.reshape(img1, [1,2592, 1944, 3]), np.reshape(img2, [1, 2592, 1944, 3]))
 print(loss_psnr)
 print(loss_ssim)
-
-的广泛覆盖
