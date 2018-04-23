@@ -82,8 +82,10 @@ def rename(dir):
 if __name__=='__main__':
     """filenames = getfilenames('dped/mi/full_training_data/mi')
     print(filenames)"""
+    filename = [12, 17, 18, 22, 23, 24, 37, 38, 39, 46, 47, 48, 49, 50, 51, 52, 53, 54, 57,
+                67, 68, 69, 70, 71, 72, 73, 74, 75, 83, 84, 85, 86, 87, 97, 98, 99, 100]
     p = mp.Pool(processes=10)
-    p.map_async(preprocess, list(range(1, 100)))
+    p.map_async(preprocess, filename)
     p.close()
     p.join()
 
