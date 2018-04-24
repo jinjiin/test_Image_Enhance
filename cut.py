@@ -91,8 +91,8 @@ def detect_pathes(img1, img2, picnum):
                     max = results[k]
                     maxflag = k
             if results[maxflag] > 0.55:
-                cv2.imwrite('dped/mi/training_data/mi/' + str(picnum) + ".jpg", args[maxflag])
-                cv2.imwrite('dped/mi/training_data/canon/' + str(picnum) + ".jpg", frag)
+                cv2.imwrite('dped/mi/full_test_data/patches/mi/' + str(picnum) + ".jpg", args[maxflag])
+                cv2.imwrite('dped/mi/full_test_data/patches/canon/' + str(picnum) + ".jpg", frag)
                 """cv2.imwrite('cut_image_2/sony/sony/' + str(picnum) + ".jpg", args[maxflag])
                 cv2.imwrite('cut_image_2/sony/canon/' + str(picnum) + ".jpg", frag)"""
                 picnum = picnum + 1
@@ -151,11 +151,11 @@ def getfilenames(dir):
         filenames.append(i.split('.')[0])
     return filenames
 if __name__ == '__main__':
-    filenames = getfilenames('dped/mi/resize/mi')
+    filenames = getfilenames('dped/mi/resize/test/mi')
     patchnum = 0
     for num in filenames:
-        img1 = cv2.imread('dped/mi/resize/mi/' + str(num) + '.jpg')
-        img2 = cv2.imread('dped/mi/resize/canon/' + str(num) + '.jpg')
+        img1 = cv2.imread('dped/mi/resize/test/mi/' + str(num) + '.jpg')
+        img2 = cv2.imread('dped/mi/resize/test/canon/' + str(num) + '.jpg')
         patchnum = detect_pathes(img1, img2, patchnum)
     """img1 = cv2.imread('1403_1.jpg')
     img2 = cv2.imread('1403_2.jpg')

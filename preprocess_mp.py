@@ -13,6 +13,7 @@ def preprocess(img1num):
     if os.path.exists('dped/mi/resize/test/mi/' + str(img1num) + '.jpg'):
         print(str(img1num) + '.jpg have existed!')
         return 0
+
     img1 = cv2.imread('dped/mi/full_test_data/full_all/mi/' + str(img1num) + '.jpg')  # cv2.imread(img,0)是以灰度图的样式来读图片
     img2 = cv2.imread('dped/mi/full_test_data/full_all/canon/' + str(img1num) + '.jpg')
     sift = cv2.xfeatures2d.SIFT_create()
@@ -58,11 +59,14 @@ def preprocess(img1num):
         return orimax, orimin, phomax, phomin
 
     orimax, orimin, phomax, phomin = getmin_max_coor(src_pts, matchesMask, M)
-    img1 = img1[int(min(orimin[1], orimax[1])):int(max(orimin[1], orimax[1])),
-           int(min(orimin[0], orimax[0])):int(max(orimin[0], orimax[0]))]
-    img2 = img2[int(min(phomin[1], phomax[1])):int(max(phomin[1], phomax[1])),
-           int(min(phomin[0], phomax[0])):int(max(phomin[0], phomax[0]))]
+    print(phomin)
+    print(phomax)
+    img1 = img1[int(min(orimin[1], orimax[1], 1)):int(max(orimin[1], orimax[1])),
+           int(min(orimin[0], orimax[0], 1)):int(max(orimin[0], orimax[0]))]
+    img2 = img2[int(min(phomin[1], phomax[1], 1)):int(max(phomin[1], phomax[1])),
+           int(min(phomin[0], phomax[0], 1)):int(max(phomin[0], phomax[0]))]
     #img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC)
+    print(img2.shape)
     img1 = scipy.misc.imresize(img1, (img2.shape[0], img2.shape[1]), interp='cubic')
     cv2.imwrite('dped/mi/resize/test/mi/' + str(img1num) + '.jpg', img1)
     cv2.imwrite('dped/mi/resize/test/canon/' + str(img1num) + '.jpg', img2)
@@ -82,10 +86,13 @@ def rename(dir):
 if __name__=='__main__':
     """filenames = getfilenames('dped/mi/full_training_data/mi')
     print(filenames)"""
-    filename = [12, 17, 18, 22, 23, 24, 37, 38, 39, 46, 47, 48, 49, 50, 51, 52, 53, 54, 57,
-                67, 68, 69, 70, 71, 72, 73, 74, 75, 83, 84, 85, 86, 87, 97, 98, 99, 100]
-    p = mp.Pool(processes=10)
+    filename = [10,11,17, 22, 37, 39, 46, 49, 51, 52, 57, 67, 70, 72, 73, 83, 85, 97]
+    """p = mp.Pool(processes=10)
     p.map_async(preprocess, filename)
     p.close()
-    p.join()
+    p.join()"""
+    """for i in filename:
+        print(i)
+        preprocess(i)"""
+    preprocess(17)
 

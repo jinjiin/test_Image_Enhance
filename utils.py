@@ -37,7 +37,7 @@ def process_command_args(arguments):
     # specifying default parameters
 
     batch_size = 50
-    train_size = 30000
+    train_size = 2000
     learning_rate = 5e-4
     num_train_iters = 20000
 
@@ -100,10 +100,10 @@ def process_command_args(arguments):
         print("python train_model.py model={iphone,blackberry,sony}\n")
         sys.exit()
 
-    if phone not in ["iphone", "sony", "blackberry"]:
+    """if phone not in ["iphone", "sony", "blackberry"]:
         print("\nPlease specify the correct camera model:\n")
         print("python train_model.py model={iphone,blackberry,sony}\n")
-        sys.exit()
+        sys.exit()"""
 
     print("\nThe following parameters will be applied for CNN training:\n")
 
