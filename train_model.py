@@ -6,7 +6,7 @@ from keras.backend.tensorflow_backend import set_session
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.2
+config.gpu_options.per_process_gpu_memory_fraction = 0.8
 set_session(tf.Session(config=config))
 
 import tensorflow as tf
@@ -81,7 +81,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     # losses
     # 1) texture (adversarial) loss
 
-    discrim_target = tf.concat([adv_, 1 - adv_], 1)
+    discrim_target = tf.concat(1, [adv_, 1 - adv_])
 
     loss_discrim = -tf.reduce_sum(discrim_target * tf.log(tf.clip_by_value(discrim_predictions, 1e-10, 1.0)))
     loss_texture = -loss_discrim
@@ -149,7 +149,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
     all_zeros = np.reshape(np.zeros((batch_size, 1)), [batch_size, 1])
     test_crops = test_data[np.random.randint(0, TEST_SIZE, 5), :]
 
-    logs = open('models/' + phone + '.txt', "w+")
+    logs = open('../Image_Enhance/models/' + phone + '.txt', "w+")
     logs.close()
 
     for i in range(num_train_iters):
@@ -166,19 +166,19 @@ with tf.Graph().as_default(), tf.Session() as sess:
         train_loss_gen += loss_temp / eval_step
 
         # train discriminator
+        for m in range(5):
+            idx_train = np.random.randint(0, train_size, batch_size)
 
-        idx_train = np.random.randint(0, train_size, batch_size)
+            # generate image swaps (dslr or enhanced) for discriminator
+            swaps = np.reshape(np.random.randint(0, 2, batch_size), [batch_size, 1])
 
-        # generate image swaps (dslr or enhanced) for discriminator
-        swaps = np.reshape(np.random.randint(0, 2, batch_size), [batch_size, 1])
+            phone_images = train_data[idx_train]
+            dslr_images = train_answ[idx_train]
 
-        phone_images = train_data[idx_train]
-        dslr_images = train_answ[idx_train]
-
-        [accuracy_temp, temp] = sess.run([discim_accuracy, train_step_disc],
-                                        feed_dict={phone_: phone_images, dslr_: dslr_images, adv_: swaps})
-        train_acc_discrim += accuracy_temp / eval_step
-
+            [accuracy_temp, temp] = sess.run([discim_accuracy, train_step_disc],
+                                             feed_dict={phone_: phone_images, dslr_: dslr_images, adv_: swaps})
+            train_acc_discrim += accuracy_temp / eval_step
+        #train_acc_discrim = train_acc_discrim/5
         if i % eval_step == 0:
 
             # test generator and discriminator CNNs
@@ -219,7 +219,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
 
             # save the results to log file
 
-            logs = open('models/' + phone + '.txt', "a")
+            logs = open('../Image_Enhance/models/' + phone + '.txt', "a")
             logs.write(logs_disc)
             logs.write('\n')
             logs.write(logs_gen)
@@ -233,7 +233,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
             idx = 0
             for crop in enhanced_crops:
                 before_after = np.hstack((np.reshape(test_crops[idx], [PATCH_HEIGHT, PATCH_WIDTH, 3]), crop))
-                misc.imsave('results/' + str(phone)+ "_" + str(idx) + '_iteration_' + str(i) + '.jpg', before_after)
+                misc.imsave('../Image_Enhance/results/' + str(phone)+ "_" + str(idx) + '_iteration_' + str(i) + '.jpg', before_after)
                 idx += 1
 
             train_loss_gen = 0.0
@@ -241,7 +241,7 @@ with tf.Graph().as_default(), tf.Session() as sess:
 
             # save the model that corresponds to the current iteration
 
-            saver.save(sess, 'models/' + str(phone) + '_iteration_' + str(i) + '.ckpt', write_meta_graph=False)
+            saver.save(sess, '../Image_Enhance/models/' + str(phone) + '_iteration_' + str(i) + '.ckpt', write_meta_graph=False)
 
             # reload a different batch of training data
 
